@@ -13,7 +13,7 @@ class Player{
 
 
 class Game{
-  constructor(height, width, player1Color, player2Color){
+  constructor(height, width){
     this.height = height;
     this.width = width;
     this.currPlayer = 1; // active player: 1 or 2
@@ -22,8 +22,8 @@ class Game{
     this.makeBoard();
     this.makeHtmlBoard();
     this.canPlay = true;
-    this.player1Color = player1Color;
-    this.player2Color = player2Color;
+    // this.player1Color = player1Color;
+    // this.player2Color = player2Color;
   }
 
 
@@ -89,6 +89,22 @@ class Game{
     // console.log(this.player1Color);
     // console.log(this.player2Color);
     piece.classList.add(`p${this.currPlayer}`);
+
+    // Select all elements with class .p1
+  const p1Elements = document.querySelectorAll('.piece.p1');
+  // Select all elements with class .p2
+  const p2Elements = document.querySelectorAll('.piece.p2');
+
+  // Change background color for all .p1 elements
+  p1Elements.forEach(element => {
+    element.style.backgroundColor = this.player1Color;
+  });
+
+  // Change background color for all .p2 elements
+  p2Elements.forEach(element => {
+    element.style.backgroundColor = this.player2Color;
+  });
+
     piece.style.top = -50 * (y + 2);
 
     const spot = document.getElementById(`${y}-${x}`);
@@ -179,18 +195,10 @@ checkForWin() {
 
 const startGame = document.querySelector("#startGame");
 startGame.addEventListener('click', () => {
-  if(document.querySelector("#board").innerHTML == ""){
-    const playerOneColor = document.querySelector("#inputPlayerOne").value;
-    const playerTwoColor = document.querySelector("#inputPlayerTwo").value;
-    const player1 = new Player(playerOneColor);
-    const player2 = new Player(playerTwoColor);
-    const game = new Game(6, 7, player1.color, player2.color);
+  
+  document.querySelector("#board").innerHTML == ""
+
+  
+    const game = new Game(6, 7);
   }
-  else{
-    document.querySelector("#board").innerHTML = "";
-    const playerOneColor = document.querySelector("#inputPlayerOne").value;
-    const playerTwoColor = document.querySelector("#inputPlayerTwo").value;
-    const player1 = new Player(playerOneColor);
-    const player2 = new Player(playerTwoColor);
-    const game = new Game(6, 7, player1.color, player2.color);
-  }})
+  )

@@ -11,7 +11,6 @@ class Player{
   }
 }
 
-
 class Game{
   constructor(height, width){
     this.height = height;
@@ -22,8 +21,7 @@ class Game{
     this.makeBoard();
     this.makeHtmlBoard();
     this.canPlay = true;
-    // this.player1Color = player1Color;
-    // this.player2Color = player2Color;
+
   }
 
 
@@ -86,25 +84,14 @@ class Game{
   if(this.canPlay){
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    // console.log(this.player1Color);
-    // console.log(this.player2Color);
-    piece.classList.add(`p${this.currPlayer}`);
 
-    // Select all elements with class .p1
-  const p1Elements = document.querySelectorAll('.piece.p1');
-  // Select all elements with class .p2
-  const p2Elements = document.querySelectorAll('.piece.p2');
+    // console.log(this.currPlayer);
+    if(this.currPlayer === 1){
+      piece.style.backgroundColor = document.querySelector('#inputPlayerOne').value
+    } else if(this.currPlayer === 2){
+      piece.style.backgroundColor = document.querySelector('#inputPlayerTwo').value
 
-  // Change background color for all .p1 elements
-  p1Elements.forEach(element => {
-    element.style.backgroundColor = this.player1Color;
-  });
-
-  // Change background color for all .p2 elements
-  p2Elements.forEach(element => {
-    element.style.backgroundColor = this.player2Color;
-  });
-
+    }
     piece.style.top = -50 * (y + 2);
 
     const spot = document.getElementById(`${y}-${x}`);
@@ -196,9 +183,7 @@ checkForWin() {
 const startGame = document.querySelector("#startGame");
 startGame.addEventListener('click', () => {
   
-  document.querySelector("#board").innerHTML == ""
-
-  
-    const game = new Game(6, 7);
+  document.querySelector("#board").innerHTML = "";
+  const game = new Game(6, 7);
   }
   )

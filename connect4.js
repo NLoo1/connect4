@@ -5,15 +5,25 @@
  * board fills (tie)
  */
 
+class Player{
+  constructor(color) {
+    this.color = color;
+  }
+}
+
+
 class Game{
-  constructor(height, width){
-    this.width = width;
+  constructor(height, width, player1Color, player2Color){
     this.height = height;
+    this.width = width;
     this.currPlayer = 1; // active player: 1 or 2
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
     this.handleClick = this.handleClick.bind(this);
     this.makeBoard();
     this.makeHtmlBoard();
+    this.canPlay = true;
+    this.player1Color = player1Color;
+    this.player2Color = player2Color;
   }
 
 
@@ -73,13 +83,18 @@ class Game{
 /** placeInTable: update DOM to place piece into HTML table of board */
 
  placeInTable(y, x) {
-  const piece = document.createElement('div');
-  piece.classList.add('piece');
-  piece.classList.add(`p${this.currPlayer}`);
-  piece.style.top = -50 * (y + 2);
+  if(this.canPlay){
+    const piece = document.createElement('div');
+    piece.classList.add('piece');
+    // console.log(this.player1Color);
+    // console.log(this.player2Color);
+    piece.classList.add(`p${this.currPlayer}`);
+    piece.style.top = -50 * (y + 2);
 
-  const spot = document.getElementById(`${y}-${x}`);
-  spot.append(piece);
+    const spot = document.getElementById(`${y}-${x}`);
+    spot.append(piece);
+  }
+  
 }
 
 /** endGame: announce game end */
@@ -88,40 +103,10 @@ class Game{
   alert(msg);
 }
 
-/** handleClick: handle click of column top to play piece */
-
- handleClick(evt) {
-  // get x from ID of clicked cell
-  const x = +evt.target.id;
-
-  // get next spot in column (if none, ignore click)
-  const y = this.findSpotForCol(x);
-  if (y === null) {
-    return;
-  }
-
-  // place piece in board and add to HTML table
-  this.board[y][x] = this.currPlayer;
-  this.placeInTable(y, x);
-  
-  // check for win
-  if (checkForWin()) {
-    return this.endGame(`Player ${currPlayer} won!`);
-  }
-  
-  // check for tie
-  if (board.every(row => row.every(cell => cell))) {
-    return this.endGame('Tie!');
-  }
-    
-  // switch players
-  this.currPlayer = this.currPlayer === 1 ? 2 : 1;
-}
-
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
- checkForWin() {
-  function _win(cells) {
+checkForWin() {
+  const _win = cells => {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
     //  - returns true if all are legal coordinates & all match currPlayer
@@ -132,7 +117,7 @@ class Game{
         y < this.height &&
         x >= 0 &&
         x < this.width &&
-        board[y][x] === this.currPlayer
+        this.board[y][x] === this.currPlayer
     );
   }
 
@@ -153,13 +138,59 @@ class Game{
   }
 }
 
-// makeBoard();
-// makeHtmlBoard();
+/** handleClick: handle click of column top to play piece */
+
+ handleClick(evt) {
+  // get x from ID of clicked cell
+  const x = +evt.target.id;
+
+  // get next spot in column (if none, ignore click)
+  const y = this.findSpotForCol(x);
+  if (y === null) {
+    return;
+  }
+
+  // place piece in board and add to HTML table
+  this.board[y][x] = this.currPlayer;
+  this.placeInTable(y, x);
+  
+  if(this.canPlay){
+  // check for win
+  if (this.checkForWin()) {
+    this.canPlay = false;
+    // document.querySelector("#board").innerHTML = "";
+    return this.endGame(`Player ${this.currPlayer} won!`);
+  }
+
+  // check for tie
+  if (this.board.every(row => row.every(cell => cell))) {
+    this.canPlay = false;
+    // document.querySelector("#board").innerHTML = "";
+    return this.endGame('Tie!');
+  }
+    
+  // switch players
+  this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    }
+  
 }
 
-new Game(6, 7);   // assuming constructor takes height, width
+}
 
-
-
-
-
+const startGame = document.querySelector("#startGame");
+startGame.addEventListener('click', () => {
+  if(document.querySelector("#board").innerHTML == ""){
+    const playerOneColor = document.querySelector("#inputPlayerOne").value;
+    const playerTwoColor = document.querySelector("#inputPlayerTwo").value;
+    const player1 = new Player(playerOneColor);
+    const player2 = new Player(playerTwoColor);
+    const game = new Game(6, 7, player1.color, player2.color);
+  }
+  else{
+    document.querySelector("#board").innerHTML = "";
+    const playerOneColor = document.querySelector("#inputPlayerOne").value;
+    const playerTwoColor = document.querySelector("#inputPlayerTwo").value;
+    const player1 = new Player(playerOneColor);
+    const player2 = new Player(playerTwoColor);
+    const game = new Game(6, 7, player1.color, player2.color);
+  }})
